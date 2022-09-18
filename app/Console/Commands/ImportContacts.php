@@ -3,6 +3,11 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Modules\Import\Importer;
+use App\Modules\Import\Mapper;
+use App\Modules\Import\Storage;
+use App\Modules\Import\CsvMap;
+use App\Modules\Import\Report;
 
 class ImportContacts extends Command
 {
@@ -11,15 +16,29 @@ class ImportContacts extends Command
      *
      * @var string
      */
-    protected $signature = 'command:name';
+    protected $signature = 'command:import {name}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Import CSV file';
 
+
+    private function importCSV($fileName) {
+        $csv = [];
+        $fileHandle = fopen($fileName, 'r');
+        while (!feof($fileHandle)) {
+            $row = fgetcsv($fileHandle, 4096);
+            if (empty($row)) {
+                continue;
+            }
+            $csv[] = $row;
+        }
+        fclose($fileHandle);
+        return $csv;
+    }
     /**
      * Execute the console command.
      *
@@ -27,6 +46,21 @@ class ImportContacts extends Command
      */
     public function handle()
     {
+        $csv = $this->importCSV(
+            $this->argument('name')
+        );
+        $mapper = new Mapper($csv, new CsvMap());
+        $storage = new Storage();
+
+        $importer = new Importer(
+            $mapper
+        );
+        $importer->process();
+        $storage->save($importer->getMappedData());
+
+        $report = new Report($storage, $mapper);
+        echo json_encode($report->getReport());
+
         return 0;
     }
 }
