@@ -3,9 +3,7 @@
 namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
-use App\Modules\Import\Importer;
 use App\Modules\Import\Mapper;
-use App\Modules\Import\Storage;
 use App\Modules\Import\CsvMap;
 
 class ImportHeaderTest extends TestCase
@@ -20,12 +18,9 @@ class ImportHeaderTest extends TestCase
             $csvArray[] = str_getcsv($row);
         }
 
-        $importer = new Importer(
-            new Mapper($csvArray, new CsvMap())
-        );
+        $mapper = new Mapper($csvArray, new CsvMap());
 
-        $val = $importer->process();
-        $this->assertTrue($val);
+        $this->assertTrue($mapper->build());
     }
     public function test_it_should_have_valid_header_in_different_order()
     {
@@ -37,23 +32,18 @@ class ImportHeaderTest extends TestCase
             $csvArray[] = str_getcsv($row);
         }
 
-        $importer = new Importer(
-            new Mapper($csvArray, new CsvMap())
-        );
+        $mapper = new Mapper($csvArray, new CsvMap());
 
-        $val = $importer->process();
-        $this->assertTrue($val);
+        $this->assertTrue($mapper->build());
     }
     public function test_it_should_have_empty_header()
     {
         $csvArray = [];
 
-        $importer = new Importer(
-            new Mapper($csvArray, new CsvMap())
-        );
+        $mapper = new Mapper($csvArray, new CsvMap());
 
         try {
-            $importer->process();
+            $mapper->build();
         }
         catch (\Exception $e) {
             $this->assertEquals('Missing header', $e->getMessage());
@@ -69,12 +59,10 @@ class ImportHeaderTest extends TestCase
             $csvArray[] = str_getcsv($row);
         }
 
-        $importer = new Importer(
-            new Mapper($csvArray, new CsvMap())
-        );
+        $mapper = new Mapper($csvArray, new CsvMap());
 
         try {
-            $importer->process();
+            $mapper->build();
         }
         catch (\Exception $e) {
             $this->assertEquals('Number of fields does not match expected', $e->getMessage());
@@ -90,12 +78,10 @@ class ImportHeaderTest extends TestCase
             $csvArray[] = str_getcsv($row);
         }
 
-        $importer = new Importer(
-            new Mapper($csvArray, new CsvMap())
-        );
+        $mapper = new Mapper($csvArray, new CsvMap());
 
         try {
-            $importer->process();
+            $mapper->build();
         }
         catch (\Exception $e) {
             $this->assertEquals('Missing address_line_1', $e->getMessage());

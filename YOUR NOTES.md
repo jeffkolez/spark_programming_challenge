@@ -3,3 +3,41 @@ Please leave any notes you have here. It should include:
 - Dependencies and how to install them
 - Instructions for running the code
 - A summary of how the code works, and the expected outcome
+
+Depends on the Laravel framework.
+
+Other than PHP, the zip probably has everything you need to run.
+
+In the event it doesn't: `composer install` from the command line. If you need it, [composer first](https://getcomposer.org).
+
+To run it, run `php artisan command:import <filename to import>`
+
+It will return the report formatted to JSON:
+
+```
+jeff@JeffBook-Pro exercise % php artisan command:import contacts.csv
+{"duplicates":4,"total_rows":33,"total_valid_rows":26,"total_incomplete":3}%
+```
+
+To run unit tests, run `phpunit`
+
+```
+jeff@JeffBook-Pro exercise % phpunit 
+PHPUnit 9.5.10 by Sebastian Bergmann and contributors.
+
+...........                                                       11 / 11 (100%)
+
+Time: 00:00.112, Memory: 34.00 MB
+
+OK (11 tests, 38 assertions)
+```
+
+The unit tests are in `tests\Unit\*.php`
+
+The `Mapper` object is responsible for validating and massaging the data into a format that can be easily saved. It also keeps track of invalid rows.
+
+`CsvMap` contains metadata and the required fields for the map and tells the `Mapper` how to map its data. If any fields are changed, this should be the only class you would need to touch. In production, I'd store this in the database.
+
+`Storage` is similar to a database. It holds the massaged data searches and updates survey questions.
+
+`Report` builds and formats the report after the import.

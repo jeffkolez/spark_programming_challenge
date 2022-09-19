@@ -52,11 +52,8 @@ class ImportContacts extends Command
         $mapper = new Mapper($csv, new CsvMap());
         $storage = new Storage();
 
-        $importer = new Importer(
-            $mapper
-        );
-        $importer->process();
-        $storage->save($importer->getMappedData());
+        $mapper->build();
+        $storage->save($mapper->getMappedData());
 
         $report = new Report($storage, $mapper);
         echo json_encode($report->getReport());

@@ -3,41 +3,66 @@
 namespace App\Modules\Import;
 
 use App\Modules\Import\ImportObject;
-
+use App\Modules\Import\CsvMap;
+/**
+ * Mapper class for import
+ */
 class Mapper
 {
     private $invalidRows = [];
     private $mappedData = [];
     private $csv = [];
     private $header = [];
-    private $incompleteContacts = 0;
 
-    public function __construct(array $csv, $map) {
+    /**
+     * Constructor
+     *
+     * @param array $csv
+     * @param CsvMap $map
+     */
+    public function __construct(array $csv, CsvMap $map) {
         $this->csv = $csv;
         $this->map = $map->getMap();
     }
-
+    /**
+     * Suze of the map
+     *
+     * @return integer
+     */
     public function getNumFields(): int {
         return sizeof($this->map);
     }
-
+    /**
+     * Total number of rows in the import
+     *
+     * @return integer
+     */
     public function getTotalRows(): int {
         return sizeof($this->csv);
     }
-
-    public function getTotalIncompleteContacts(): int {
-        return $this->incompleteContacts;
-    }
-
+    /**
+     * Getter for the number of invalid rows
+     *
+     * @return array
+     */
     public function getInvalidRows(): array {
         return $this->invalidRows;
     }
-
+    /**
+     * Getter for the mapped data
+     *
+     * @return array
+     */
     public function getMappedData(): array {
         return $this->mappedData;
     }
-
-    public function build() {
+    /**
+     * Builds a relational array of the imported data. Throws exception if build fails
+     *
+     * @return bool
+     * @throws Exception
+     */
+    public function build(): bool {
         $row = 0;
         $this->validateHeader();
         $this->mappedData = [];
@@ -53,8 +78,14 @@ class Mapper
             }
             $row++;
         }
+        return true;
     }
-
+    /**
+     * Validates the header. Throws an exception if validation fails
+     *
+     * @throws Exception
+     * @return boolean
+     */
     private function validateHeader(): bool {
         if (sizeof($this->csv) == 0) {
             throw new \Exception('Missing header');
@@ -70,29 +101,40 @@ class Mapper
         }
         return true;
     }
-
-    private function mapRow($row): array {
+    /**
+     * Maps a row of data
+     *
+     * @param array $row
+     * @return array
+     */
+    private function mapRow(array $row): array {
         $mappedRow = [];
 
         for($i = 0; $i < count($row); $i++) {
-            if ($this->validField($this->header[$i], $row[$i])) {
-                $fieldName = $this->header[$i];
-                $mappedRow[$fieldName] =
-                    new ImportObject(
-                        $row[$i],
-                        $this->map[$fieldName]['required'],
-                        $this->map[$fieldName]['is_survey_question']
-                    );
+            if ((sizeof($row) <= 1) && (empty($row[0]))){
+                continue;
             }
-            else {
-                $this->incompleteContacts++;
+            if (! $this->validField($this->header[$i], $row[$i])) {
                 throw new \Exception($this->map[$i]['field']);
             }
+            $fieldName = $this->header[$i];
+            $mappedRow[$fieldName] =
+                new ImportObject(
+                    $row[$i],
+                    $this->map[$fieldName]['required'],
+                    $this->map[$fieldName]['is_survey_question']
+                );
         }
         return $mappedRow;
     }
-
-    private function validField($fieldName, $data): bool {
+    /**
+     * Validates field
+     *
+     * @param string $fieldName
+     * @param string $data
+     * @return boolean
+     */
+    private function validField(string $fieldName, string $data): bool {
         if ($this->map[$fieldName]['required'] === false) {
             return true;
         }
