@@ -4,18 +4,16 @@ Please leave any notes you have here. It should include:
 - Instructions for running the code
 - A summary of how the code works, and the expected outcome
 
-Depends on the Laravel framework.
+Depends on PHP8, [Composer](https://getcomposer.org), and Laravel.
 
-Other than PHP > 8, the zip probably has everything you need to run.
+To install, run `composer install` from the command line inside the exercise directory.
 
-In the event it doesn't: `composer install` from the command line. If you need it, [composer first](https://getcomposer.org).
-
-To run it, run `php artisan command:import <filename to import> --report=<type>`
+Directions: `php artisan command:import <filename to import> --report=<type> --format=<type>`
 
 The report parameter is optional. The options are:
 
 * `imported` -- Displays the list of imported records
-* `invalid` -- Displays the list of rows that are invalid and the reason they weren't imported
+* `invalid` -- Displays the list of row numbers that are invalid and the reason they weren't imported
 * Default -- Displays stats for the import
 
 In this exercise, duplicate rows are considered valid however they will overwrite the survey questions.
@@ -59,7 +57,4 @@ The `Mapper` object is responsible for validating and massaging the data into a 
 
 `Storage` is similar to a database. It holds the massaged data searches and updates survey questions.
 
-`Report` builds and formats the report after the import.
-
-To view formatted valid records, uncomment line 60 in `ImportContacts`
-To view invalid records, uncomment line 61 in the same file.
+`Report` builds and formats the reports after the import.
