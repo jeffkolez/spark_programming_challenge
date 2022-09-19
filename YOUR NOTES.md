@@ -6,17 +6,36 @@ Please leave any notes you have here. It should include:
 
 Depends on the Laravel framework.
 
-Other than PHP, the zip probably has everything you need to run.
+Other than PHP > 8, the zip probably has everything you need to run.
 
 In the event it doesn't: `composer install` from the command line. If you need it, [composer first](https://getcomposer.org).
 
-To run it, run `php artisan command:import <filename to import>`
+To run it, run `php artisan command:import <filename to import> --report=<type>`
 
-It will return the report formatted to JSON:
+The report parameter is optional. The options are:
+
+* `imported` -- Displays the list of imported records
+* `invalid` -- Displays the list of rows that are invalid and the reason they weren't imported
+* Default -- Displays stats for the import
+
+In this exercise, duplicate rows are considered valid however they will overwrite the survey questions.
 
 ```
 jeff@JeffBook-Pro exercise % php artisan command:import contacts.csv
-{"duplicates":4,"total_rows":33,"total_valid_rows":26,"total_incomplete":3}%
+Array
+(
+    [duplicates] => 4
+    [total_rows] => 33
+    [total_valid_rows] => 26
+    [total_incomplete] => 3
+)
+```
+
+There's also an optional parameter `format` which exports as JSON because everyone loves JSON:
+
+```
+jeff@JeffBook-Pro exercise % php artisan command:import contacts.csv --format=json
+{"duplicates":4,"total_rows":33,"total_valid_rows":26,"total_incomplete":3}%   
 ```
 
 To run unit tests, run `phpunit`
@@ -41,3 +60,6 @@ The `Mapper` object is responsible for validating and massaging the data into a 
 `Storage` is similar to a database. It holds the massaged data searches and updates survey questions.
 
 `Report` builds and formats the report after the import.
+
+To view formatted valid records, uncomment line 60 in `ImportContacts`
+To view invalid records, uncomment line 61 in the same file.

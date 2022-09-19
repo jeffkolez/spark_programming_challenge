@@ -27,13 +27,33 @@ class Report
      *
      * @return array
      */
-    public function getReport(): array {
+    public function getImportReport(): array {
         return [
             'duplicates' => $this->storage->getNumberOfDuplicates(),
             'total_rows' => $this->mapper->getTotalRows(),
             'total_valid_rows' => sizeof($this->storage->getImportedData()),
             'total_incomplete' => sizeof($this->mapper->getInvalidRows())
         ];
+    }
+
+    public function formatImportedData(): array {
+        $data = [];
+        foreach($this->storage->getImportedData() as $row) {
+            $rowData = [];
+            foreach($row as $key => $row) {
+                $rowData[$key] = $row->value;
+            }
+            $data[] = $rowData;
+        }
+        return $data;
+    }
+
+    public function formatInvalidRows(): array {
+        $data = [];
+        foreach($this->mapper->getInvalidRows() as $key => $field) {
+            $data[] = "Row {$key} missing value for {$field}";
+        }
+        return $data;
     }
 
 

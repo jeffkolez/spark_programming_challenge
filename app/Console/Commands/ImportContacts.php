@@ -15,7 +15,7 @@ class ImportContacts extends Command
      *
      * @var string
      */
-    protected $signature = 'command:import {name}';
+    protected $signature = 'command:import {name} {--report=} {--format=}';
 
     /**
      * The console command description.
@@ -55,7 +55,25 @@ class ImportContacts extends Command
         $storage->save($mapper->getMappedData());
 
         $report = new Report($storage, $mapper);
-        echo json_encode($report->getReport());
+
+        switch($this->option('report')) {
+            case 'imported':
+                $data = $report->formatImportedData();
+                break;
+            case 'invalid':
+                $data = $report->formatInvalidRows();
+                break;
+            default:
+                $data = $report->getImportReport();
+        }
+
+        switch($this->option('format')) {
+            case 'json':
+                echo json_encode($data);
+                break;
+            default:
+                print_r($data);
+        }
 
         return 0;
     }

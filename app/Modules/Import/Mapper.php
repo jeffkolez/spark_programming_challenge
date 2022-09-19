@@ -115,7 +115,7 @@ class Mapper
                 continue;
             }
             if (! $this->validField($this->header[$i], $row[$i])) {
-                throw new \Exception($this->map[$i]['field']);
+                throw new \Exception($this->header[$i]);
             }
             $fieldName = $this->header[$i];
             $mappedRow[$fieldName] =

@@ -27,7 +27,7 @@ class ImportDataTest extends TestCase
         $mapper->build();
         $storage->save($mapper->getMappedData());
         $reportObj = new Report($storage, $mapper);
-        $report = $reportObj->getReport();
+        $report = $reportObj->getImportReport();
         $this->assertEquals($report['total_valid_rows'], 1);
         $this->assertEquals($report['duplicates'], 0);
         $this->assertEquals($report['total_rows'], 1);
@@ -51,7 +51,7 @@ class ImportDataTest extends TestCase
         $mapper->build();
         $storage->save($mapper->getMappedData());
         $reportObj = new Report($storage, $mapper);
-        $report = $reportObj->getReport();
+        $report = $reportObj->getImportReport();
         $this->assertEquals($report['total_valid_rows'], 2);
         $this->assertEquals($report['duplicates'], 1);
         $this->assertEquals($report['total_rows'], 3);
@@ -75,7 +75,7 @@ class ImportDataTest extends TestCase
         $mapper->build();
         $storage->save($mapper->getMappedData());
         $reportObj = new Report($storage, $mapper);
-        $report = $reportObj->getReport();
+        $report = $reportObj->getImportReport();
         $this->assertEquals($report['total_valid_rows'], 1);
         $this->assertEquals($report['duplicates'], 1);
         $this->assertEquals($report['total_rows'], 2);
@@ -107,7 +107,7 @@ class ImportDataTest extends TestCase
         $mapper->build();
         $storage->save($mapper->getMappedData());
         $reportObj = new Report($storage, $mapper);
-        $report = $reportObj->getReport();
+        $report = $reportObj->getImportReport();
         $this->assertEquals($report['total_valid_rows'], 2);
         $this->assertEquals($report['duplicates'], 2);
         $this->assertEquals($report['total_rows'], 5);
@@ -142,7 +142,7 @@ class ImportDataTest extends TestCase
         $mapper->build();
         $storage->save($mapper->getMappedData());
         $reportObj = new Report($storage, $mapper);
-        $report = $reportObj->getReport();
+        $report = $reportObj->getImportReport();
         $this->assertEquals($report['total_valid_rows'], 1);
         $this->assertEquals($report['duplicates'], 1);
         $this->assertEquals($report['total_rows'], 2);
