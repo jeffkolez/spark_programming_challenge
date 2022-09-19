@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Modules\Import\Importer;
 use App\Modules\Import\Mapper;
 use App\Modules\Import\Storage;
 use App\Modules\Import\CsvMap;
